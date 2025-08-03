@@ -1,0 +1,19 @@
+#spring:
+#  datasource:
+#    default:
+#      url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+#      username: root
+#      password: Rat10nal@#
+#      type: mysql
+spring:
+  datasource:
+    default:
+      url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+      type: h2
+# JdbcTemplate use dynamicDataSource
+jdbc-template:
+  data-source: dynamicDataSource
+server:
+  port: 8080

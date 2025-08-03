@@ -1,0 +1,62 @@
+.DS_Store                  # macOS
+Thumbs.db                  # Windows
+*.swp                      # Vim 临时文件
+*.swo                      # Vim 临时文件
+*~                         # 一般临时文件
+
+# 日志文件
+logs/
+*.log
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# 编辑器配置（如果不需要共享）
+.idea/                     # IntelliJ IDEA
+.vscode/                   # VS Code
+*.sublime-*                # Sublime Text
+.project                   # Eclipse
+.classpath                 # Eclipse
+
+# 依赖包
+node_modules/
+bower_components/
+
+# 编译/打包产物
+dist/
+build/
+out/
+dist-ssr/
+*.local
+
+# 缓存文件
+.cache/
+.eslintcache
+.pnp/
+# 编译产物
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# 依赖
+.m2/
+gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE 配置
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# 日志
+logs/
+*.log
