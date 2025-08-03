@@ -3,6 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ApiService, DbConnInfo, GridData, SearchRequest} from './api.service';
 import {catchError, finalize, of} from 'rxjs';
+import * as e from 'express';
 
 @Component({
   selector: 'app-root',
@@ -57,9 +58,11 @@ export class App {
   errorMessage = '';
   serviceResult: any;
   serviceGridResult: any;
+
   connect(): void {
     this.isLoading = true;
     this.loadingMessage = 'Loading...';
+    this.clearSelected();
     const dbConnInfo: DbConnInfo = {
       userName: this.userName.trim(),
       url: this.url.trim(),
@@ -106,6 +109,15 @@ export class App {
     this.cdr.markForCheck();
   }
 
+  clearSelected() {
+    this.selectedColumns = [];
+    this.selectedColumnOperation = new Map<String, String>();
+    this.selectedColumnCriteriaValue = new Map<String, String>();
+    this.gridData.columns = [];
+    this.gridData.records = [];
+    this.refreshElement();
+  }
+
   searchTableData() {
     if(this.selectedDBTable === '' || this.selectedDBTable === 'No data') {
       alert("Please connect to database and select a table to proceed.");
@@ -140,6 +152,9 @@ export class App {
       pageNum: this.pageNum,
       pageSize: this.pageSize,
       tableName: this.selectedDBTable,
+      selectedColumnCriteriaValue: Object.fromEntries(this.selectedColumnCriteriaValue),
+      selectedColumnOperation: Object.fromEntries(this.selectedColumnOperation),
+      selectedColumnNames: this.selectedColumns,
     };
     this.apiService.searchDataForTable(searchRequest).pipe(
       catchError(error => {
@@ -169,6 +184,7 @@ export class App {
         this.pageNum = this.gridData.pageNum;
         this.totalItems = this.gridData.totalNum;
         this.totalPages = this.gridData.totalPage;
+        this.selectedColumns = this.gridData.columns;
       }
       this.refreshElement();
     });
@@ -189,6 +205,51 @@ export class App {
     this.pageNum = 1;
     this.searchTableData();
   }
+  selectedColumns: String[] = [];
+  updateSelectedColumn(event: Event, col:String) {
+    const input = event.target as HTMLInputElement;
+    const isChecked = input.checked;
+    if(isChecked) {
+      this.selectedColumns.push(col);
+      //
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(colName => colName !== col);
+      this.selectedColumnOperation.delete(col);
+      this.selectedColumnCriteriaValue.delete(col);
+      //alert("remove");
+    }
+    //alert(this.selectedColumns)
+  }
 
+  selectedColumnOperation: Map<String,String> = new Map<String,String>();
+  updateOperationChange(event: Event, col:String) {
+    if(!this.selectedColumns.includes(col)) {
+      return;
+    }
+    const input = event.target as HTMLSelectElement;
+    const operation = input.value;
+    // alert(col+":"+operation);
+    if(operation != '' && operation != 'Select operator') {
+      this.selectedColumnOperation.set(col,operation);
+    } else {
+      this.selectedColumnOperation.delete(col);
+    }
+    /*for (const [key, value] of this.selectedColumnOperation) {
+      console.log(`key: ${key}, value: ${value}`);
+    }*/
+  }
+
+  selectedColumnCriteriaValue: Map<String,String> =  new Map<String,String>();
+  updateSelectedColumnCriteriaValue(event: Event, col:String) {
+    if(!this.selectedColumns.includes(col)) {
+      return;
+    }
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    // alert(col+":"+value);
+    if(value != '') {
+      this.selectedColumnCriteriaValue.set(col,value);
+    }
+  }
   protected readonly Object = Object;
 }

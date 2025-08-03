@@ -74,7 +74,7 @@ public class GeneralDataQueryController {
         try{
             // 0. is DS already created?
             if (!dataSourceService.isDataSourceExist(searchRequestDTO.getDbConnInfoDTO().getKey())) {
-                return new RetCode<>("500501", "DB connection is not exist, Please provide DB connection info and try to click Connect button.");
+                return new RetCode<>("500501", "DB connection is not exist / lost, Please provide DB connection info and try to click Connect button.");
             }
             // 1. switch datasource
             dataSourceService.switchDataSource(searchRequestDTO.getDbConnInfoDTO().getKey());
@@ -84,6 +84,7 @@ public class GeneralDataQueryController {
             String sqlCount = generator.generateCountSelectFor(searchRequestDTO);
             // 3. execute SQL
             result = jdbcTemplate.queryForList(sql);
+            System.out.println(sql);
             // 3.1 count
             if(!CollectionUtils.isEmpty(result)){
                 totalCount = jdbcTemplate.queryForObject(sqlCount,Integer.class);

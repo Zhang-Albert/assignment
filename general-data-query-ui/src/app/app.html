@@ -2,7 +2,7 @@
 <main class="content">
   <div class="page-header">
     <h1>Welcome to Use General Data Query Tool</h1>
-    <p>Supply the DB connection Info and have a try.(Now only support single table query, only tested against MySQL and H2)</p>
+    <p>Supply the DB connection Info and have a try.(Only support single table query, now only tested against MySQL)</p>
   </div>
 
   <div class="content-cards">
@@ -62,7 +62,7 @@
       Available Tables:
       <select
         [(ngModel)]="selectedDBTable"
-        (change) = "searchTableData()"
+        (change) = "clearSelected();searchTableData()"
         class="custom-select">
         @for(option of allTables;track option){
           <option [value]="option">
@@ -96,7 +96,7 @@
               @for (col of gridData.columns; track col; let i=$index) {
                 <th>
                   {{col}}
-                  <input type="checkbox">
+                  <input type="checkbox" checked="checked" (change)="updateSelectedColumn($event,col)">
                 </th>
               }
             </tr>
@@ -104,8 +104,7 @@
               @for (col of gridData.columns; track col) {
                 <th>
                   <select
-                    class="custom-select">
-                    placeholder="Please select operator."
+                    class="custom-select" (change)="updateOperationChange($event,col)">
                     @for (option of operationList; track option) {
                       <option [value]="option">
                         {{ option }}
@@ -120,6 +119,7 @@
                 <th>
                   <input
                     type="text"
+                    (change)="updateSelectedColumnCriteriaValue($event,col)"
                     placeholder="Value: separate by Comma if more"
                     class="custom-input"
                   >
@@ -128,7 +128,7 @@
             </tr>
             </thead>
             <tbody>
-              @for (record of gridData.records; track record) {
+              @for (record of gridData.records; track record.keys()) {
                 <tr>
                   @for (key of gridData.columns; track key) {
                         <td>{{ record.get(key) }}</td>

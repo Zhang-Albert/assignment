@@ -39,6 +39,9 @@ export interface GridData {
 }
 export interface SearchRequest {
   dbConnInfoDTO:DbConnInfo,
+  selectedColumnNames: String[],
+  selectedColumnOperation: Map<String,String>,
+  selectedColumnCriteriaValue: Map<String,String>,
   pageSize: number,
   pageNum: number,
   tableName: String,
