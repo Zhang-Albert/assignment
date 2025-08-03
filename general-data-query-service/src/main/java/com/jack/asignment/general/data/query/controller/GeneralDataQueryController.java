@@ -85,6 +85,7 @@ public class GeneralDataQueryController {
             // 3. execute SQL
             result = jdbcTemplate.queryForList(sql);
             System.out.println(sql);
+            System.out.println(sqlCount);
             // 3.1 count
             if(!CollectionUtils.isEmpty(result)){
                 totalCount = jdbcTemplate.queryForObject(sqlCount,Integer.class);

@@ -115,6 +115,7 @@ export class App {
     this.selectedColumnCriteriaValue = new Map<String, String>();
     this.gridData.columns = [];
     this.gridData.records = [];
+    this.pageNum = 1;
     this.refreshElement();
   }
 
@@ -249,6 +250,8 @@ export class App {
     // alert(col+":"+value);
     if(value != '') {
       this.selectedColumnCriteriaValue.set(col,value);
+    } else {
+      this.selectedColumnCriteriaValue.delete(col);
     }
   }
   protected readonly Object = Object;

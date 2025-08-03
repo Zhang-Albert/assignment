@@ -3,6 +3,8 @@ package com.jack.asignment.general.data.query.sql.generator;
 import com.jack.asignment.general.data.query.dto.SearchRequestDTO;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 /**
@@ -31,8 +33,8 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
         sql.append("Select count(1) ");
         constructFromClause(sql,searchRequestDTO);
         constructWhereClause(sql,searchRequestDTO);
-        constructOrderByClause(sql,searchRequestDTO);
-        constructPaginationClause(sql,searchRequestDTO);
+        // constructOrderByClause(sql,searchRequestDTO);
+        // constructPaginationClause(sql,searchRequestDTO);
         return sql.toString();
     }
 
@@ -59,32 +61,29 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
         if(!CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnOperation())
                 && !CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnCriteriaValue())) {
             sb.append(" where ");
-            for (int i = 0; i < searchRequestDTO.getSelectedColumnOperation().size(); i++) {
-                String item = searchRequestDTO.getSelectedColumnNames().get(i);
-                String operation = searchRequestDTO.getSelectedColumnOperation().get(item);
+            List<Map.Entry<String,String>> entryList = searchRequestDTO.getSelectedColumnOperation().entrySet().stream().toList();
+            for (int i = 0; i < entryList.size(); i++) {
+                String item = entryList.get(i).getKey();
                 String value = searchRequestDTO.getSelectedColumnCriteriaValue().get(item);
-                if(operation == null || operation.equalsIgnoreCase("")) {
-                    continue;
-                }
-                if(value == null || value.equalsIgnoreCase("")) {
-                    continue;
-                }
-                sb.append(item).append(" ");
-                if("like".equalsIgnoreCase(operation)){
-                    sb.append("%").append(operation)
-                            .append("% ").append(convertValue(value));
-                } else if("between".equalsIgnoreCase(operation)){
-                    String[] values = value.split(",");
-                    sb.append(operation)
-                            .append(" ").append(convertValue(values[0])).append(" and ").append(convertValue(values[1]));
-                } else {
-                    sb.append(operation)
-                            .append(" ").append(convertValue(value));
-                }
-                if(i != searchRequestDTO.getSelectedColumnOperation().size()-1) {
-                    sb.append(" and ");
-                } else {
-                    sb.append(" ");
+                String operation = searchRequestDTO.getSelectedColumnOperation().get(item);
+                if(operation != null && !operation.equalsIgnoreCase("") &&
+                        value != null && !value.equalsIgnoreCase("")) {
+                    sb.append(item).append(" ");
+                    if("like".equalsIgnoreCase(operation)){
+                        sb.append(operation).append(" '%").append(value).append("%' ");
+                    } else if("between".equalsIgnoreCase(operation)){
+                        String[] values = value.split("#");
+                        sb.append(operation)
+                                .append(" ").append(convertValue(values[0])).append(" and ").append(convertValue(values[1]));
+                    } else {
+                        sb.append(operation)
+                                .append(" ").append(convertValue(value));
+                    }
+                    if(i != searchRequestDTO.getSelectedColumnOperation().size()-1) {
+                        sb.append(" and ");
+                    } else {
+                        sb.append(" ");
+                    }
                 }
             }
         }
