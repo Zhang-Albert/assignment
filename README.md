@@ -8,19 +8,19 @@ Back-end implemented by Java Spring / Springboot. Expose 2 RESTful APIs to front
 ### 3. install angular 
 ### 4. install JDK 17+
 
-##Steps for runing this demo:
+## Steps for runing this demo:
 ### 1. start up front-end application
-npm install
-npm run start
+#### npm install
+#### npm run start
 ### 2. start up back-end application
 java -jar query-0.0.1-SNAPSHOT.jar
 ### 3. Access this URL using browser
 http://localhost:4200/
 
-##System design:
-Check the word in base directory: Check the word in base directory.
+## System design:
+Check the word document in base directory: General-Data-Query-Tool-Design.docx
 
-##APIs specifications:
+## APIs specifications:
 Swagger UI Link:
 http://localhost:8080/swagger-ui/index.html#/
 
