@@ -3,9 +3,7 @@ package com.jack.asignment.general.data.query.sql.generator;
 import com.jack.asignment.general.data.query.dto.SearchRequestDTO;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * default behavior here
@@ -57,13 +55,23 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
         sb.append(" from ").append(searchRequestDTO.getTableName());
     }
 
+    private Set<String> keyInteraction(SearchRequestDTO searchRequestDTO) {
+        if(CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnOperation())
+                        || CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnCriteriaValue())) {
+            return new HashSet<>();
+        }
+        Set<String> interaction = new HashSet<>(searchRequestDTO.getSelectedColumnOperation().keySet());
+        interaction.retainAll(searchRequestDTO.getSelectedColumnCriteriaValue().keySet());
+        return interaction;
+    }
+
     protected void constructWhereClause(StringBuilder sb,SearchRequestDTO searchRequestDTO) {
-        if(!CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnOperation())
-                && !CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnCriteriaValue())) {
+        Set<String> interaction = keyInteraction(searchRequestDTO);
+        if(!interaction.isEmpty()) {
             sb.append(" where ");
-            List<Map.Entry<String,String>> entryList = searchRequestDTO.getSelectedColumnOperation().entrySet().stream().toList();
-            for (int i = 0; i < entryList.size(); i++) {
-                String item = entryList.get(i).getKey();
+            List<String> interactionList = interaction.stream().toList();
+            for (int i = 0; i < interactionList.size(); i++) {
+                String item = interactionList.get(i);
                 String value = searchRequestDTO.getSelectedColumnCriteriaValue().get(item);
                 String operation = searchRequestDTO.getSelectedColumnOperation().get(item);
                 if(operation != null && !operation.equalsIgnoreCase("") &&
@@ -80,7 +88,7 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
                         sb.append(operation)
                                 .append(" ").append(convertValue(value));
                     }
-                    if(i != searchRequestDTO.getSelectedColumnOperation().size()-1) {
+                    if(i != interactionList.size()-1) {
                         sb.append(" and ");
                     } else {
                         sb.append(" ");
@@ -111,7 +119,18 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
     }
 
     protected void constructOrderByClause(StringBuilder sb,SearchRequestDTO searchRequestDTO) {
-
+        if(searchRequestDTO.getOrderBy() == null || "".equalsIgnoreCase(searchRequestDTO.getOrderBy())) {
+            if(!CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnNames())) {
+                searchRequestDTO.setOrderBy(searchRequestDTO.getSelectedColumnNames().get(0));
+                if(searchRequestDTO.getOrder() == null || "".equalsIgnoreCase(searchRequestDTO.getOrder())) {
+                    searchRequestDTO.setOrder("asc");
+                }
+            }
+        }
+        if(searchRequestDTO.getOrderBy() != null && !"".equalsIgnoreCase(searchRequestDTO.getOrderBy())
+                &&searchRequestDTO.getOrder() != null && !"".equalsIgnoreCase(searchRequestDTO.getOrder())) {
+            sb.append(" order by ").append(searchRequestDTO.getOrderBy()).append(" ").append(searchRequestDTO.getOrder()).append(" ");
+        }
     }
 
     protected void constructPaginationClause(StringBuilder sb,SearchRequestDTO searchRequestDTO) {

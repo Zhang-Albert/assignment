@@ -22,7 +22,6 @@ export class App {
     "H2",
     "Oracle",
     "DB2",
-    "MsSQL",
     "PostgreSQL",
     "Hive",
     "ClickHouse"
@@ -116,6 +115,8 @@ export class App {
     this.gridData.columns = [];
     this.gridData.records = [];
     this.pageNum = 1;
+    this.orderByColumn = '';
+    this.order = '';
     this.refreshElement();
   }
 
@@ -156,6 +157,8 @@ export class App {
       selectedColumnCriteriaValue: Object.fromEntries(this.selectedColumnCriteriaValue),
       selectedColumnOperation: Object.fromEntries(this.selectedColumnOperation),
       selectedColumnNames: this.selectedColumns,
+      order: this.order,
+      orderBy: this.orderByColumn,
     };
     this.apiService.searchDataForTable(searchRequest).pipe(
       catchError(error => {
@@ -253,6 +256,19 @@ export class App {
     } else {
       this.selectedColumnCriteriaValue.delete(col);
     }
+  }
+
+  orderByColumn: String = '';
+  order: String = '';
+  orderByDesc(col: String){
+    this.orderByColumn = col;
+    this.order = 'Desc';
+    this.searchTableData();
+  }
+  orderByAsc(col: String){
+    this.orderByColumn = col;
+    this.order = 'Asc';
+    this.searchTableData();
   }
   protected readonly Object = Object;
 }

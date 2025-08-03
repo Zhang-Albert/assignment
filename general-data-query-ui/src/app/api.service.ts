@@ -45,6 +45,8 @@ export interface SearchRequest {
   pageSize: number,
   pageNum: number,
   tableName: String,
+  orderBy: String,
+  order: String
 }
 
 export interface RetCode<T> {

@@ -14,6 +14,8 @@ public class SearchRequestDTO {
     private Map<String,String> selectedColumnCriteriaValue;
     private Map<String,String> selectedColumnOperation;
     private List<String> selectedColumnNames;
+    private String orderBy;
+    private String order;
     public DBConnInfoDTO getDbConnInfoDTO() {
         return dbConnInfoDTO;
     }
@@ -68,5 +70,21 @@ public class SearchRequestDTO {
 
     public void setSelectedColumnNames(List<String> selectedColumnNames) {
         this.selectedColumnNames = selectedColumnNames;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
     }
 }
