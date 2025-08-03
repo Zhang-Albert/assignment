@@ -84,7 +84,7 @@ export class App {
       // console.log(data);
       this.serviceResult = data;
       if (this.serviceResult.retCode != '200') {
-        alert("Fail: "+this.serviceResult.msg);
+        alert("Fail, service not available. Please check! " + this.serviceResult.msg);
         this.isLoading = false;
         this.loadingMessage = '';
       } else {
