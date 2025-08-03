@@ -26,14 +26,19 @@ public class ResultWrapperService {
 
     public SearchResponseDTO convertResult(List<Map<String, Object>> result, SearchRequestDTO searchRequestDTO, Integer totalCount) {
         var response = new SearchResponseDTO();
-        List<String> cols = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(result)) {
-            Map<String, Object> oneLine = result.get(0);
-            if(!CollectionUtils.isEmpty(oneLine)) {
-                cols.addAll(oneLine.keySet());
+
+        if(!CollectionUtils.isEmpty(searchRequestDTO.getSelectedColumnNames())) {
+            response.setColumns(searchRequestDTO.getSelectedColumnNames());
+        } else {
+            if(!CollectionUtils.isEmpty(result)) {
+                List<String> cols = new ArrayList<>();
+                Map<String, Object> oneLine = result.get(0);
+                if(!CollectionUtils.isEmpty(oneLine)) {
+                    cols.addAll(oneLine.keySet());
+                }
+                response.setColumns(cols);
             }
         }
-        response.setColumns(cols);
         response.setRecords(result);
         response.setTotalNum(totalCount);
         response.setPageNum(searchRequestDTO.getPageNum());

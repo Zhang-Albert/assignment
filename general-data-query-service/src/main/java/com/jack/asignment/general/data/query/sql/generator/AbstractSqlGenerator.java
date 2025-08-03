@@ -68,6 +68,7 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
                 String operation = searchRequestDTO.getSelectedColumnOperation().get(item);
                 if(operation != null && !operation.equalsIgnoreCase("") &&
                         value != null && !value.equalsIgnoreCase("")) {
+                    value = value.trim();
                     sb.append(item).append(" ");
                     if("like".equalsIgnoreCase(operation)){
                         sb.append(operation).append(" '%").append(value).append("%' ");
@@ -91,7 +92,7 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
 
     private String convertValue(String input) {
         if(!isNumber(input)) {
-            return "'" + input + "'";
+            return "'" + input.trim() + "'";
         } else {
             return input;
         }
